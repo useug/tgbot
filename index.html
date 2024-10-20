@@ -62,13 +62,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background-color: #2c3e50;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             z-index: 1000;
-            width: 70%;
-            max-width: 350px;
+            width: 80%;
+            max-width: 300px;
             text-align: center;
         }
         .dialog img {
@@ -80,6 +79,18 @@
         .dialog p {
             margin: 10px 0;
             font-size: 16px;
+        }
+        .error-dialog {
+            background-color: #3498db;
+        }
+        #userDialog {
+            background-color: #3498db;
+        }
+        #errorDialog {
+            background-color: #3498db;
+        }
+        #invalidLinkDialog {
+            background-color: #3498db;
         }
     </style>
 </head>
@@ -103,7 +114,17 @@
         <img id="userAvatar" src="" alt="User Avatar">
         <p id="userName"></p>
         <p id="userSbtCount"></p>
-        <button onclick="closeDialog()">Close</button>
+        <button onclick="closeDialog('userDialog')">Close</button>
+    </div>
+
+    <div id="errorDialog" class="dialog error-dialog">
+        <p id="errorMessage"></p>
+        <button onclick="closeDialog('errorDialog')">Close</button>
+    </div>
+
+    <div id="invalidLinkDialog" class="dialog error-dialog">
+        <p>Please copy your profile link correctly</p>
+        <button onclick="closeDialog('invalidLinkDialog')">Close</button>
     </div>
 
     <script>
@@ -125,11 +146,11 @@
                         fetchSbtCount(userId, avatarUrl, name);
                     })
                     .catch(error => {
-                        alert('Error fetching user data');
+                        showErrorDialog('Error fetching user data');
                         console.error('Error:', error);
                     });
             } else {
-                alert('Please copy your profile link correctly');
+                showDialog('invalidLinkDialog');
             }
         }
 
@@ -141,7 +162,7 @@
                     showUserDialog(avatarUrl, name, sbtCount);
                 })
                 .catch(error => {
-                    alert('Error fetching SBT count');
+                    showErrorDialog('Error fetching SBT count');
                     console.error('Error:', error);
                 });
         }
@@ -150,11 +171,20 @@
             document.getElementById('userAvatar').src = avatarUrl;
             document.getElementById('userName').textContent = `Hi, ${name}`;
             document.getElementById('userSbtCount').textContent = `You have ${sbtCount} badges`;
-            document.getElementById('userDialog').style.display = 'block';
+            showDialog('userDialog');
         }
 
-        function closeDialog() {
-            document.getElementById('userDialog').style.display = 'none';
+        function showErrorDialog(message) {
+            document.getElementById('errorMessage').textContent = message;
+            showDialog('errorDialog');
+        }
+
+        function showDialog(dialogId) {
+            document.getElementById(dialogId).style.display = 'block';
+        }
+
+        function closeDialog(dialogId) {
+            document.getElementById(dialogId).style.display = 'none';
         }
     </script>
 </body>
